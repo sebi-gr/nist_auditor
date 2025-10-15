@@ -17,13 +17,17 @@ jobs:
       pull-requests: read
     steps:
       - name: Validate PR body has provenance trailer
+        uses: actions-ecosystem/action-regex-match@v2
+        id: match
+        with:
+          text: "${{ github.event.pull_request.body || '' }}"
+          regex: '^Provenance:\s*(ai|human|external|mixed|unknown)\s*$'
+          flags: 'mi'
+      - name: Fail if missing/invalid
+        if: steps.match.outputs.match == ''
         run: |
-          body="${{ github.event.pull_request.body }}"
-          # Matches bold (**Provenance:** ai) or plain (Provenance: ai)
-          if ! printf '%s\n' "$body" | grep -Eiq '^\s*\*{0,2}Provenance\*{0,2}\s*:\s*(ai|human|external|mixed|unknown)\s*$'; then
-            echo "Missing or invalid 'Provenance:' trailer in PR body." >&2
-            exit 1
-          fi
+          echo "Missing or invalid 'Provenance:' trailer in PR body." >&2
+          exit 1
 
   gitleaks:
     name: 2) Secrets Scan (Gitleaks)
