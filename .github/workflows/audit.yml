@@ -71,6 +71,8 @@ jobs:
               "version": "2.1.0",
               "runs": []
             }
+          EOF
+          fi
       - name: Upload Gitleaks SARIF
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -100,6 +102,8 @@ jobs:
               "version": "2.1.0",
               "runs": []
             }
+          EOF
+          fi
       - name: Upload SARIF
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -146,6 +150,8 @@ jobs:
               "version": "2.1.0",
               "runs": []
             }
+          EOF
+          fi
       - name: Upload CodeQL SARIF
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
