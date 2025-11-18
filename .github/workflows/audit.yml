@@ -28,6 +28,20 @@ jobs:
         run: |
           echo "Missing or invalid 'Provenance:' trailer in PR body." >&2
           exit 1
+      - name: Write provenance results
+        if: ${{ always() }}
+        run: |
+          if [[ "${{ steps.match.outputs.match }}" == "" ]]; then
+            echo "Missing or invalid 'Provenance:' trailer in PR body." > provenance-results.txt
+          else
+            echo "Provenance trailer detected: ${{ steps.match.outputs.match }}" > provenance-results.txt
+          fi
+      - name: Upload provenance results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: provenance-results
+          path: provenance-results.txt
 
   gitleaks:
     name: 2) Secrets Scan (Gitleaks)
@@ -46,7 +60,23 @@ jobs:
         with:
           args: >
             detect --redact --no-banner --exit-code 1
+            --report-format sarif --report-path gitleaks-results.sarif
             --log-opts "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+      - name: Ensure Gitleaks SARIF exists
+        if: ${{ always() }}
+        run: |
+          if [ ! -f gitleaks-results.sarif ]; then
+            cat <<'EOF' > gitleaks-results.sarif
+            {
+              "version": "2.1.0",
+              "runs": []
+            }
+      - name: Upload Gitleaks SARIF
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-sarif
+          path: gitleaks-results.sarif
 
   semgrep:
     name: 3) Semgrep (Java)
@@ -61,7 +91,17 @@ jobs:
           config: p/security-audit
           generateSarif: true
           sarifFile: semgrep.sarif
+      - name: Ensure Semgrep SARIF exists
+        if: ${{ always() }}
+        run: |
+          if [ ! -f semgrep.sarif ]; then
+            cat <<'EOF' > semgrep.sarif
+            {
+              "version": "2.1.0",
+              "runs": []
+            }
       - name: Upload SARIF
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: semgrep-sarif
@@ -95,3 +135,20 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java"
+          output: codeql-results
+      - name: Ensure CodeQL SARIF exists
+        if: ${{ always() }}
+        run: |
+          mkdir -p codeql-results
+          if ! ls codeql-results/*.sarif >/dev/null 2>&1; then
+            cat <<'EOF' > codeql-results/java.sarif
+            {
+              "version": "2.1.0",
+              "runs": []
+            }
+      - name: Upload CodeQL SARIF
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-sarif
+          path: codeql-results
