@@ -8,8 +8,8 @@ import java.sql.Statement;
  */
 public class SecurityPitfalls {
     // Hard-coded AWS credentials for Gitleaks to detect.
-    private static final String AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE";
-    private static final String AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY";
+    private static final String GITHUB_TOKEN = "ghp_1234567890abcdefghijklmnopqrstuvwxyzABCD";
+
 
     public static void main(String[] args) throws Exception {
         String userInput = args.length > 0 ? args[0] : "' OR '1'='1";
