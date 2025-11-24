@@ -61,7 +61,7 @@ jobs:
               "version": "2.1.0",
               "runs": []
             }
-            EOF
+          EOF
           fi
       - name: Upload Gitleaks SARIF
         if: ${{ always() }}
