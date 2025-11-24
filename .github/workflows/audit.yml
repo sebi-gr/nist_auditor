@@ -100,10 +100,10 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: java
-      - name: Manual build (javac)
+      - name: Build Java
         run: |
           mkdir -p build
-          javac -g -d build $(git ls-files "*.java")
+          javac -cp "lib/javax.servlet-api-4.0.1.jar" -g -d build $(git ls-files "*.java")
       - name: Analyze
         uses: github/codeql-action/analyze@v3
         with:
