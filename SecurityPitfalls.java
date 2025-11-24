@@ -23,7 +23,7 @@ public class SecurityPitfalls {
         Connection connection = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
         Statement statement = connection.createStatement();
 
-        // BAD: SQL Statement wird per String-Konkatenation gebaut.
+        // BAD: SQL Statement wird per String-Konkatenation gebaut
         String query = "SELECT * FROM users WHERE username = '" + username + "'";
         ResultSet resultSet = statement.executeQuery(query);
 
