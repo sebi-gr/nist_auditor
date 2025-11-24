@@ -60,8 +60,7 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: p/security-audit
-          generateSarif: true
-          sarifFile: semgrep.sarif
+          generateSarif: "1"
       - name: Ensure Semgrep SARIF exists
         if: ${{ always() }}
         run: |
