@@ -45,8 +45,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}   # required by the action
         with:
           args: >
-            detect --redact --no-banner --exit-code 1
-            --log-opts "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+            detect --source=. --no-git --redact --no-banner --exit-code 1
+            --log-opts "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" 
 
   semgrep:
     name: 3) Semgrep (Java)
