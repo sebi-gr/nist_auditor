@@ -44,9 +44,31 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}   # required by the action
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "false"
         with:
           args: >
             detect --source=. --no-git --redact --no-banner --exit-code 1
+      - name: Normalize Gitleaks SARIF path
+        if: ${{ always() }}
+        run: |
+          if [ -f results.sarif ]; then
+            mv results.sarif gitleaks.sarif
+          fi
+
+          if [ ! -f gitleaks.sarif ]; then
+            cat <<'EOF' > gitleaks.sarif
+            {
+              "version": "2.1.0",
+              "runs": []
+            }
+            EOF
+          fi
+      - name: Upload Gitleaks SARIF
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-sarif
+          path: gitleaks.sarif
 
   semgrep:
     name: 3) Semgrep (Java)
