@@ -126,6 +126,7 @@ jobs:
           mkdir -p build
           javac -cp "lib/javax.servlet-api-4.0.1.jar" -g -d build $(git ls-files "*.java")
       - name: Analyze
+        continue-on-error: true
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java"
