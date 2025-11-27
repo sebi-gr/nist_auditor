@@ -176,7 +176,7 @@ jobs:
 
       - name: Run SARIF aggregation
         run: |
-          python .github/scripts/aggregate_sarif.py --sarif-dir sarif --repo-root .
+          python scripts/aggregate_sarif.py --sarif-dir sarif --repo-root .
 
       - name: Upload metrics JSON
         if: ${{ always() }}
