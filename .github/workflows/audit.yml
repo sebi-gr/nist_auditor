@@ -166,8 +166,8 @@ jobs:
       - name: Download SARIF artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: '*-sarif'   # holt gitleaks-sarif, semgrep-sarif, codeql-sarif
-          path: sarif          # alles landet unter ./sarif/
+          pattern: '*-sarif'
+          path: sarif
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -176,7 +176,7 @@ jobs:
 
       - name: Run SARIF aggregation
         run: |
-          python ../scripts/aggregate_sarif.py --sarif-dir sarif --repo-root .
+          python .github/workflows/scripts/aggregate_sarif.py --sarif-dir sarif --repo-root .
 
       - name: Upload metrics JSON
         if: ${{ always() }}
