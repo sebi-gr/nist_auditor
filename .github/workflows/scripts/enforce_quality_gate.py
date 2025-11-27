@@ -7,18 +7,7 @@ import sys
 
 
 def parse_pr_quality_gate(pr_body: str) -> dict:
-    """
-    Liest Security-Gate-Mode & Thresholds aus dem PR-Body.
-    Erwartet z. B.:
-
-      Security-Gate-Mode: enforce
-      MaxTotalIssueGroups: 0
-      MaxHighSeverityFindings: 0
-      MaxDensityPerKLoCGrouped: 0.50
-      MaxSecretFindings: 0
-
-      TODO: eigentlich unnötig, da schon in GitHub Actions validiert
-    """
+    import re
     flags = re.MULTILINE | re.IGNORECASE
 
     def read(pattern: str, field: str, cast):
@@ -33,20 +22,20 @@ def parse_pr_quality_gate(pr_body: str) -> dict:
                 f"Field '{field}' has invalid value '{raw}': {e}"
             )
 
-    mode = read(r"^Security-Gate-Mode:\s*(\w+)", "Security-Gate-Mode", str).lower()
-    max_total = read(r"^MaxTotalIssueGroups:\s*([0-9]+)", "MaxTotalIssueGroups", int)
+    mode = read(r"Security-Gate-Mode:\s*(\w+)", "Security-Gate-Mode", str).lower()
+    max_total = read(r"MaxTotalIssueGroups:\s*([0-9]+)", "MaxTotalIssueGroups", int)
     max_high = read(
-        r"^MaxHighSeverityFindings:\s*([0-9]+)",
+        r"MaxHighSeverityFindings:\s*([0-9]+)",
         "MaxHighSeverityFindings",
         int,
     )
     max_density = read(
-        r"^MaxDensityPerKLoCGrouped:\s*([0-9]*\.?[0-9]+)",
+        r"MaxDensityPerKLoCGrouped:\s*([0-9]*\.?[0-9]+)",
         "MaxDensityPerKLoCGrouped",
         float,
     )
     max_secret = read(
-        r"^MaxSecretFindings:\s*([0-9]+)",
+        r"MaxSecretFindings:\s*([0-9]+)",
         "MaxSecretFindings",
         int,
     )
@@ -58,7 +47,6 @@ def parse_pr_quality_gate(pr_body: str) -> dict:
         "max_density_grouped": max_density,
         "max_secret": max_secret,
     }
-
 
 def main() -> None:
     parser = argparse.ArgumentParser()

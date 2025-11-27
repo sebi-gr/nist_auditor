@@ -21,7 +21,7 @@ jobs:
         id: match
         with:
           text: "${{ github.event.pull_request.body || '' }}"
-          regex: '^Provenance:\s*(ai|human|external|mixed|unknown)\s*$'
+          regex: 'Provenance:\s*(ai|human|external|mixed|unknown)\s*'
           flags: 'mi'
 
       - name: Fail if Provenance missing/invalid
@@ -35,7 +35,7 @@ jobs:
         id: qg_mode
         with:
           text: "${{ github.event.pull_request.body || '' }}"
-          regex: '^Security-Gate-Mode:\s*(enforce|warn|none)\s*$'
+          regex: 'Security-Gate-Mode:\s*(enforce|warn|none)\s*'
           flags: 'mi'
 
       - name: Fail if Security-Gate-Mode missing/invalid
@@ -49,7 +49,7 @@ jobs:
         id: qg_total
         with:
           text: "${{ github.event.pull_request.body || '' }}"
-          regex: '^MaxTotalIssueGroups:\s*[0-9]+\s*$'
+          regex: 'MaxTotalIssueGroups:\s*[0-9]+\s*'
           flags: 'mi'
 
       - name: Fail if MaxTotalIssueGroups missing/invalid
@@ -63,7 +63,7 @@ jobs:
         id: qg_high
         with:
           text: "${{ github.event.pull_request.body || '' }}"
-          regex: '^MaxHighSeverityFindings:\s*[0-9]+\s*$'
+          regex: 'MaxHighSeverityFindings:\s*[0-9]+\s*'
           flags: 'mi'
 
       - name: Fail if MaxHighSeverityFindings missing/invalid
@@ -77,7 +77,7 @@ jobs:
         id: qg_density
         with:
           text: "${{ github.event.pull_request.body || '' }}"
-          regex: '^MaxDensityPerKLoCGrouped:\s*[0-9]*\.?[0-9]+\s*$'
+          regex: 'MaxDensityPerKLoCGrouped:\s*[0-9]*\.?[0-9]+\s*'
           flags: 'mi'
 
       - name: Fail if MaxDensityPerKLoCGrouped missing/invalid
@@ -91,7 +91,7 @@ jobs:
         id: qg_secret
         with:
           text: "${{ github.event.pull_request.body || '' }}"
-          regex: '^MaxSecretFindings:\s*[0-9]+\s*$'
+          regex: 'MaxSecretFindings:\s*[0-9]+\s*'
           flags: 'mi'
 
       - name: Fail if MaxSecretFindings missing/invalid
