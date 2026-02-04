@@ -577,9 +577,9 @@ def _render_html(report: Dict[str, Any]) -> str:
 
   <h2>RMF overview</h2>
   <ul>
-    <li>Missing owners: {esc(rmf.get("missing_fields",{{}}).get("owner",0))}</li>
-    <li>Missing tickets: {esc(rmf.get("missing_fields",{{}}).get("ticket",0))}</li>
-    <li>Missing SLAs: {esc(rmf.get("missing_fields",{{}}).get("sla_days",0))}</li>
+    <li>Missing owners: {esc(rmf.get("missing_fields", {}).get("owner", 0))}</li>
+    <li>Missing tickets: {esc(rmf.get("missing_fields", {}).get("ticket", 0))}</li>
+    <li>Missing SLAs: {esc(rmf.get("missing_fields", {}).get("sla_days", 0))}</li>
   </ul>
 
   <h2>Recommendations</h2>
