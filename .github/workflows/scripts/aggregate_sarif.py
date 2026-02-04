@@ -159,7 +159,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--output",
-        default="summary.json",
+        default="security-metrics.json",
         help="Where to write the aggregated metrics JSON",
     )
     args = parser.parse_args()

@@ -4,6 +4,7 @@ CI-centric RMF report step (no local CLI workflow required).
 
 Expected inputs (fixed paths):
 - artifacts/summary.json              (required) : pipeline-produced aggregated JSON (like your example)
+  Fallbacks (local/dev): security-metrics.json, summary.json
 - rmf_map.yml                         (required) : category->RMF mapping
 - .security/decisions.yml             (optional) : human decisions for Manage/Govern
 
@@ -626,6 +627,14 @@ def main() -> int:
     _ensure_dir(artifacts_dir)
 
     summary_path = artifacts_dir / "summary.json"
+    if not summary_path.exists():
+        for fallback in (Path("security-metrics.json"), Path("summary.json")):
+            if fallback.exists():
+                print(
+                    f"[report_step] WARN: {summary_path} not found; using {fallback}"
+                )
+                summary_path = fallback
+                break
     rmf_map_path = Path("rmf_map.yml")
     decisions_path = Path(".security") / "decisions.yml"
 
