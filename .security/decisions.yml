@@ -1,0 +1,17 @@
+# .security/decisions.yml
+clusters:
+  "mod:root|cat:sql-injection|sev:HIGH":
+    status: "planned"              # planned | accepted | fixed | none
+    owner: "team-backend"
+    sla_days: 7
+    ticket: "SEC-1234"
+    exception_ttl_days: null
+    rationale: "Fix before merge or next release; SQLi is not acceptable."
+
+  "mod:root|cat:weak-crypto-md5|sev:MEDIUM":
+    status: "planned"
+    owner: "team-backend"
+    sla_days: 30
+    ticket: "SEC-1250"
+    exception_ttl_days: null
+    rationale: "Replace MD5 with SHA-256/HMAC; verify if security-relevant."

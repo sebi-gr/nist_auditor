@@ -15,6 +15,10 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+
+    outputs:
+      provenance: ${{ steps.match.outputs.group1 }}
+
     steps:
       - name: Validate PR body has provenance trailer
         uses: actions-ecosystem/action-regex-match@v2
@@ -253,12 +257,13 @@ jobs:
           path: security-metrics.json
 
   quality_gate:
-    name: 6) Security Quality Gate
+    name: 6) Security Quality Gate + RMF Report
     runs-on: ubuntu-latest
-    needs: metrics
+    needs: [metrics, provenance]
     permissions:
       contents: read
       pull-requests: read
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -276,8 +281,44 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install report deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
       - name: Run Security Quality Gate
+        id: enforce
         env:
           PR_BODY: ${{ github.event.pull_request.body || '' }}
         run: |
           python .github/workflows/scripts/enforce_quality_gate.py --metrics-file security-metrics.json
+
+      # --- ab hier: Report läuft IMMER, auch wenn Quality Gate failt ---
+      - name: Prepare report inputs
+        if: ${{ always() }}
+        run: |
+          mkdir -p artifacts
+          cp security-metrics.json artifacts/summary.json
+
+      - name: Build RMF report
+        if: ${{ always() }}
+        env:
+          PROVENANCE: ${{ needs.provenance.outputs.provenance || 'unknown' }}
+          SCAN_SCOPE: diff-only
+          REPO_NAME: ${{ github.repository }}
+          COMMIT_SHA: ${{ github.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          # Gate-Status für den Report (aus Ergebnis des enforce Steps)
+          GATE_STATUS: ${{ steps.enforce.outcome == 'failure' && 'fail' || 'pass' }}
+        run: |
+          python tools/report_step.py
+
+      - name: Upload RMF report artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: rmf-report
+          path: |
+            artifacts/report.json
+            artifacts/report.html
+            artifacts/pr_summary.md
