@@ -1,0 +1,42 @@
+# rmf_map.yml
+# Deterministic mapping from finding categories -> RMF-relevant context (Map/Measure/Manage/Govern)
+# Extend this over time with more categories and internal policy IDs.
+
+categories:
+  sql-injection:
+    threat: "Injection"
+    cwe: ["CWE-89"]
+    cia: ["Confidentiality", "Integrity"]
+    policy: ["SC-DB-01", "SC-INJ-01"]
+    recommend:
+      - "Use parameterized queries (PreparedStatement) instead of string formatting/concatenation."
+      - "Validate and constrain user input; avoid passing request parameters directly to SQL sinks."
+      - "Add unit tests for unsafe inputs and regression tests for fixed sinks."
+    default_sla_days: 7
+    next_steps:
+      - "Create ticket and assign owner; fix before next release if severity is high."
+      - "Add targeted review for DB-access layers and request-to-sink flows."
+
+  weak-crypto-md5:
+    threat: "Weak cryptography"
+    cwe: ["CWE-327"]
+    cia: ["Integrity", "Confidentiality"]
+    policy: ["SC-CRYPTO-02"]
+    recommend:
+      - "Replace MD5 with SHA-256 or stronger for hashing; use HMAC (e.g., HmacSHA256) for signatures."
+      - "Ensure cryptographic primitives are used via modern libraries and safe defaults."
+    default_sla_days: 30
+    next_steps:
+      - "Confirm whether the hash is used for security-relevant purposes (passwords/signatures/tokens)."
+      - "If security-relevant, prioritize and shorten SLA; otherwise document rationale."
+
+  OTHER:
+    threat: "Uncategorized"
+    cwe: []
+    cia: ["Unknown"]
+    policy: ["SC-GEN-00"]
+    recommend:
+      - "Review the finding manually and classify it into a known category if applicable."
+    default_sla_days: 60
+    next_steps:
+      - "Triaging required: assign owner and decide fix/accept with justification."
